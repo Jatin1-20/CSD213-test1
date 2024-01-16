@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                'Lucida Grande', 'Lucida Sans Unicode',
+                Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        div.container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 2px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        input {
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        p#ERR {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Grade Calculator</h1>
+
+        <button onclick="addActivity()" id="addActivity">Add Activity</button>
+
+        <label for="activity">Activity</label>
+        <input type="text" id="activity" size="3">
+
+        <label for="Weight">Weight</label>
+        <input type="text" id="Weight" size="3"><br>
+
+        <button onclick="addGrade()" id="addGrade">Add Grade</button>
+
+        <label for="grade">Grade</label>
+        <input type="text" id="grade" size="3">
+
+        <label for="activityNo">Activity no</label>
+        <input type="text" id="activityNo" size="3"><br>
+
+        <button onclick="deleteActivity()" id="deleteActivity">Delete Activity</button>
+        <button onclick="deleteActivityFromTop()"><b>Delete activity from top</b></button>
+
+        <table border="2" id="theTable">
+            <tr>
+                <th>No</th>
+                <th>Activity</th>
+                <th>Weight</th>
+                <th>Grade</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Lab1</td>
+                <td>10</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Lab2</td>
+                <td>20</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Test1</td>
+                <td>30</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Test2</td>
+                <td>40</td>
+                <td></td>
+            </tr>
+        </table>
+        <p id="ERR">Error Message: </p>
+
+        <script>
+            let noActivity = 4;
+            const totalWeight = 100;
+            const ERR = document.getElementById("ERR");
+
+            function addActivity() {
+                const activityInput = document.getElementById("activity");
+                const weightInput = document.getElementById("Weight");
+                const table = document.getElementById("theTable");
+
+                const activity = activityInput.value.trim();
+                const weight = parseInt(weightInput.value);
+
+                if (!activity || isNaN(weight) || weight < 1 || weight > 100) {
+                    ERR.textContent = "Error Message: Invalid input.";
+                    return;
+                }
+
+                noActivity++;
+                if (noActivity > 10) {
+                    ERR.textContent = "Error Message: Maximum activities limit reached.";
+                    return;
+                }
+
+                const newRow = table.insertRow(-1);
+                const cells = [
+                    newRow.insertCell(),
+                    newRow.insertCell(),
+                    newRow.insertCell(),
+                    newRow.insertCell()
+                ];
+
+                cells[0].textContent = noActivity;
+                cells[1].textContent = activity;
+                cells[2].textContent = weight;
+                cells[3].textContent = "";
+
+                ERR.textContent = "";
+                activityInput.value = "";
+                weightInput.value = "";
+            }
+
+            function deleteActivity() {
+                const table = document.getElementById("theTable");
+
+                if (noActivity <= 0) {
+                    ERR.textContent = "Error Message: No activities to delete.";
+                    return;
+                }
+
+                table.deleteRow(-1);
+                noActivity--;
+
+                ERR.textContent = "";
+            }
+
+            function deleteActivityFromTop() {
+                const table = document.getElementById("theTable");
+
+                if (noActivity <= 0) {
+                    ERR.textContent = "Error Message: No activities to delete.";
+                    return;
+                }
+
+                table.deleteRow(1); // Delete the second row (top row)
+                noActivity--;
+
+                ERR.textContent = "";
+            }
+
+            function addGrade() {
+                const gradeInput = document.getElementById("grade");
+                const activityNoInput = document.getElementById("activityNo");
+                const table = document.getElementById("theTable");
+
+                const grade = parseInt(gradeInput.value);
+                const activityNo = parseInt(activityNoInput.value);
+
+                if (isNaN(grade) || grade < 0 || grade > 100 || activityNo <= 0 || activityNo > noActivity) {
+                    ERR.textContent = "Error Message: Invalid input.";
+                    return;
+                }
+
+                const row = table.rows[activityNo];
+
+                if (!row) {
+                    ERR.textContent = "Error Message: Activity No is rejected.";
+                    return;
+                }
+
+                row.cells[3].textContent = grade;
+
+                ERR.textContent = "";
+                gradeInput.value = "";
+                activityNoInput.value = "";
+            }
+        </script>
+    </div>
+</body>
+
+</html>
